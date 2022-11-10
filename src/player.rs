@@ -24,8 +24,8 @@ impl Player {
 
     #[method]
     fn _ready(&mut self, #[base] base: TRef<Area2D>) {
-        godot_print!("Hello, base!");
         self.screen_size = base.get_viewport_rect().size;
+        base.hide();
     }
 
     #[method]

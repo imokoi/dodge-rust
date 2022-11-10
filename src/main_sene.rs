@@ -4,6 +4,7 @@ use gdnative::api::*;
 use gdnative::prelude::*;
 use rand::Rng;
 
+use crate::hud::Hud;
 use crate::mob::Mob;
 use crate::player::Player;
 
@@ -25,6 +26,21 @@ impl MainScene {
     }
 
     #[method]
+    fn game_over(&self, #[base] base: TRef<Node>) {
+        let score_timer = unsafe { base.get_node_as::<Timer>("ScoreTimer").unwrap() };
+        score_timer.stop();
+        let timer = unsafe { base.get_node_as::<Timer>("MobTimer").unwrap() };
+        timer.stop();
+
+        let hud = unsafe { base.get_node_as_instance::<Hud>("HUD").unwrap() };
+        hud.map(|hud, base| hud.show_game_over(base))
+            .ok()
+            .unwrap_or_else(|| {
+                godot_error!("Failed to get HUD instance");
+            });
+    }
+
+    #[method]
     fn new_game(&mut self, #[base] base: TRef<Node>) {
         let start_position = unsafe { base.get_node_as::<Position2D>("StartPosition").unwrap() };
         let player = unsafe { base.get_node_as_instance::<Player>("Player").unwrap() };
@@ -36,6 +52,36 @@ impl MainScene {
         let start_timer = unsafe { base.get_node_as::<Timer>("StartTimer").unwrap() };
         start_timer.start(0.0);
         self.score = 0;
+
+        let hud = unsafe { base.get_node_as_instance::<Hud>("HUD").unwrap() };
+        hud.map(|h, base| {
+            h.update_score(base, self.score);
+            h.show_message(base, "Get Ready".into());
+        })
+        .ok()
+        .unwrap_or_else(|| godot_print!("failed to update score"));
+    }
+
+    #[method]
+    fn on_start_timer_timeout(&self, #[base] base: TRef<Node>) {
+        // Start score time, so the score will be changed per second.
+        let score_timer = unsafe { base.get_node_as::<Timer>("ScoreTimer").unwrap() };
+        score_timer.start(0.0);
+
+        // start the mob timer to spawn mobs.
+        let mob_timer = unsafe { base.get_node_as::<Timer>("MobTimer").unwrap() };
+        mob_timer.start(0.0);
+    }
+
+    #[method]
+    fn on_score_timer_timeout(&mut self, #[base] base: TRef<Node>) {
+        self.score += 1;
+        let hud = unsafe { base.get_node_as_instance::<Hud>("HUD").unwrap() };
+        hud.map(|h, base| {
+            h.update_score(base, self.score);
+        })
+        .ok()
+        .unwrap_or_else(|| godot_print!("failed to update score"));
     }
 
     #[method]
@@ -66,14 +112,6 @@ impl MainScene {
         })
         .ok()
         .expect("faield");
-    }
-
-    #[method]
-    fn _ready(&mut self, #[base] base: TRef<Node>) {
-        godot_print!("hello main");
-        self.new_game(base);
-        let mob_timer = unsafe { base.get_node_as::<Timer>("MobTimer").unwrap() };
-        mob_timer.start(0.0);
     }
 }
 
