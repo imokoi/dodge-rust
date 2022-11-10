@@ -33,7 +33,7 @@ const MOB_TYPES: [MobType; 3] = [MobType::Walk, MobType::Swim, MobType::Fly];
 
 #[methods]
 impl Mob {
-    fn new(owner: &RigidBody2D) -> Self {
+    fn new(_base: &RigidBody2D) -> Self {
         Mob {
             min_speed: 150.0,
             max_speed: 150.0,
@@ -59,7 +59,7 @@ impl Mob {
     }
 
     #[method]
-    fn on_start_game(&self, #[base] base:TRef<RigidBody2D>) {
+    fn on_start_game(&self, #[base] base: TRef<RigidBody2D>) {
         unsafe {
             base.assume_unique().queue_free();
         }

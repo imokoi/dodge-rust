@@ -81,13 +81,13 @@ impl Player {
 
         let collision_shape = unsafe {
             base.get_node_as::<CollisionShape2D>("CollisionShape2D")
-            .unwrap()
+                .unwrap()
         };
         collision_shape.set_deferred("disable", true);
     }
 
     #[method]
-    fn start(&self, #[base] base: TRef<Area2D>, position: Vector2) {
+    pub fn start(&self, #[base] base: TRef<Area2D>, position: Vector2) {
         base.set_global_position(position);
         base.show();
         let collision_shape = unsafe {
