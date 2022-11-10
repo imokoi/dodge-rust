@@ -2,17 +2,22 @@ use gdnative::{api::*, prelude::*};
 
 #[derive(NativeClass)]
 #[inherit(Area2D)]
+#[register_with(Self::register_signal)]
 pub struct Player {
-    #[property]
+    #[property(default = 200.0)]
     pub speed: f32,
     pub screen_size: Vector2,
 }
 
 #[methods]
 impl Player {
+    fn register_signal(builder: &ClassBuilder<Self>) {
+        builder.signal("hit").done()
+    }
+
     fn new(_owner: &Area2D) -> Self {
         Player {
-            speed: 250.0,
+            speed: 200.0,
             screen_size: Vector2::new(0.0, 0.0),
         }
     }
@@ -58,9 +63,37 @@ impl Player {
             animated_sprite.stop();
         }
 
-        base.set_global_position(Vector2 {
+        let position = Vector2 {
             x: base.global_position().x + velocity.x * self.speed * delta,
             y: base.global_position().y + velocity.y * self.speed * delta,
-        })
+        };
+        let final_position = Vector2 {
+            x: position.x.max(0.0).min(self.screen_size.x),
+            y: position.y.max(0.0).min(self.screen_size.y),
+        };
+        base.set_global_position(final_position);
+    }
+
+    #[method]
+    fn on_area2d_body_entered(&self, #[base] base: TRef<Area2D>) {
+        base.hide();
+        base.emit_signal("hit", &[]);
+
+        let collision_shape = unsafe {
+            base.get_node_as::<CollisionShape2D>("CollisionShape2D")
+            .unwrap()
+        };
+        collision_shape.set_deferred("disable", true);
+    }
+
+    #[method]
+    fn start(&self, #[base] base: TRef<Area2D>, position: Vector2) {
+        base.set_global_position(position);
+        base.show();
+        let collision_shape = unsafe {
+            base.get_node_as::<CollisionShape2D>("CollisionShape2D")
+                .unwrap()
+        };
+        collision_shape.set_disabled(false);
     }
 }

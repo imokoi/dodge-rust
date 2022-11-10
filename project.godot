@@ -21,7 +21,7 @@ window/size/height=720
 
 [gdnative]
 
-singletons=[ "res://rust_gdnativelibrary.tres" ]
+singletons=[  ]
 
 [gui]
 
