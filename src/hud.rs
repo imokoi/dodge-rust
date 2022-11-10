@@ -24,9 +24,6 @@ impl Hud {
 
         let message_timer = unsafe { base.get_node_as::<Timer>("MessageTimer").unwrap() };
         message_timer.start(0.0);
-
-        let message_timer = unsafe { base.get_node_as::<Timer>("MessageTimer").unwrap() };
-        message_timer.start(0.0);
     }
 
     #[method]
