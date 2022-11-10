@@ -75,7 +75,7 @@ impl Player {
     }
 
     #[method]
-    fn on_area2d_body_entered(&self, #[base] base: TRef<Area2D>) {
+    fn on_area2d_body_entered(&self, #[base] base: TRef<Area2D>, _body: Ref<RigidBody2D>) {
         base.hide();
         base.emit_signal("hit", &[]);
 
