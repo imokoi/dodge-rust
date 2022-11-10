@@ -27,9 +27,12 @@ animations = [ {
 } ]
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 24.0
+radius = 22.9999
+height = 20.0001
 
 [node name="Mob" type="RigidBody2D"]
+collision_mask = 0
+gravity_scale = 0.0
 script = ExtResource( 7 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]

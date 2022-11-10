@@ -36,7 +36,7 @@ impl Mob {
     fn new(_base: &RigidBody2D) -> Self {
         Mob {
             min_speed: 150.0,
-            max_speed: 150.0,
+            max_speed: 250.0,
         }
     }
 

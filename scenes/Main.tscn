@@ -31,3 +31,5 @@ position = Vector2( 240, 450 )
 curve = SubResource( 1 )
 
 [node name="MobSpawnLocation" type="PathFollow2D" parent="Path2D"]
+
+[connection signal="timeout" from="MobTimer" to="." method="on_mob_timer_timeout"]
