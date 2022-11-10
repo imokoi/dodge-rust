@@ -1,9 +1,11 @@
 [gd_resource type="GDNativeLibrary" format=2]
 
 [resource]
+entry/HTML5.wasm32 = "res://target/wasm32-unknown-emscripten/release/dodge_rust.wasm"
 entry/OSX.64 = "res://target/debug/libdodge_rust.dylib"
 entry/Windows.64 = "res://target/debug/dodge_rust.dll"
 entry/Windows.32 = "res://target/debug/dodge_rust.dll"
+dependency/HTML5.wasm32 = [  ]
 dependency/OSX.64 = [  ]
 dependency/Windows.64 = [  ]
 dependency/Windows.32 = [  ]
